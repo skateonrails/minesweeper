@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Tile do
@@ -5,15 +7,19 @@ describe Tile do
 
   describe '#initialize' do
     it 'should start as a "hidden" tile' do
-      expect(subject.hidden).to eq(true)
+      expect(subject.hidden).to be true
     end
 
     it 'should start without flag mark' do
-      expect(subject.has_flag).to eq(false)
+      expect(subject.has_flag).to be false
     end
 
     it 'should start without adjacent bombs count' do
       expect(subject.adjacent_bombs_count).to eq(0)
+    end
+
+    it 'should start without mine set on tile' do
+      expect(subject.has_mine).to be false
     end
   end
 
@@ -60,4 +66,19 @@ describe Tile do
     end
   end
 
+  describe '#place_mine' do
+    context 'without mine placed' do
+      it 'should set has_mine to true' do
+        subject.place_mine
+        expect(subject.has_mine).to be true
+      end
+    end
+
+    context 'with mine placed' do
+      it 'should raise error' do
+        allow(subject).to receive(:has_mine).and_return(true)
+        expect { subject.place_mine }.to raise_error(MineAlreadyPlacedError)
+      end
+    end
+  end
 end
