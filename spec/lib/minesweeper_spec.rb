@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Minesweeper do
@@ -6,13 +8,11 @@ describe Minesweeper do
   let(:width) { 10 }
   let(:height) { 10 }
   let(:mines) { 20 }
-  let(:game) { subject.new(width: width, height: height, mines: mines) }
 
   describe '#initialize' do
-    it 'should receive width, height and number of mines' do
-      expect(game.width).to eq(width)
-      expect(game.height).to eq(height)
-      expect(game.mines).to eq(mines)
+    it 'should create a board' do
+      expect(Board).to receive(:new).with(width: width, height: height, mine_count: mines)
+      subject.new(width: width, height: height, mines: mines)
     end
   end
 end
