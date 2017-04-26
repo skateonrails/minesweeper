@@ -21,7 +21,9 @@ class Tile
   end
 
   def toggle_flag
+    return false unless hidden
     self.has_flag = !has_flag
+    true
   end
 
   def place_mine

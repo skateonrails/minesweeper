@@ -24,12 +24,22 @@ describe Tile do
   end
 
   describe '#toggle_flag' do
-    it 'should toggle value for has_flag' do
-      subject.toggle_flag
-      expect(subject.has_flag).to be true
+    context 'with "hidden" tile' do
+      it 'should toggle value for has_flag' do
+        expect(subject.toggle_flag).to be true
+        expect(subject.has_flag).to be true
 
-      subject.toggle_flag
-      expect(subject.has_flag).to be false
+        expect(subject.toggle_flag).to be true
+        expect(subject.has_flag).to be false
+      end
+    end
+
+    context 'without "hidden" tile' do
+      it 'should return false' do
+        allow(subject).to receive(:hidden).and_return(false)
+        expect(subject.toggle_flag).to be false
+        expect(subject.has_flag).to be false
+      end
     end
   end
 
