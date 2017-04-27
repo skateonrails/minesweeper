@@ -5,12 +5,14 @@ require 'tile'
 require_relative 'helpers/board_helper'
 # Board class is responsible to create a matrix of tiles
 class Board
-  attr_reader :width, :height, :mine_count, :grid
+  attr_reader :grid, :tiles_remaining
 
-  def initialize(width:, height:, mine_count:)
+  def initialize(width:, height:, mine_count:, minesweeper:)
     @width = width
     @height = height
     @mine_count = mine_count
+    @minesweeper = minesweeper
+    @tiles_remaining = (width * height) - mine_count
 
     create_matrix
     setup_adjacent_tiles
@@ -25,10 +27,22 @@ class Board
     tile(x_axis, y_axis).toggle_flag
   end
 
+  def mine_clicked
+    minesweeper.mine_clicked
+  end
+
+  def valid_tile_discovered
+    self.tiles_remaining -= 1
+    minesweeper.victory if tiles_remaining.zero?
+  end
+
   private
 
+  attr_reader :width, :height, :mine_count, :minesweeper
+  attr_writer :tiles_remaining
+
   def create_matrix
-    @grid = Matrix.build(width, height) { Tile.new }
+    @grid = Matrix.build(width, height) { Tile.new(board: self) }
   end
 
   def setup_adjacent_tiles
