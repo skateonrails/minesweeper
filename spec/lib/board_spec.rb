@@ -24,6 +24,13 @@ describe Board do
       expect(tile).to receive(:place_mine).at_least(mine_count).times
       board
     end
+
+    it 'should set adjacent tiles for each tile' do
+      board.grid.each do |tile|
+        expect(tile.adjacent_tiles.size).to be >= 3
+        expect(tile.adjacent_tiles.size).to be <= 8
+      end
+    end
   end
 
   describe '#click_tile' do
