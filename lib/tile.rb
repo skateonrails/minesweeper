@@ -7,22 +7,24 @@ class Tile
   attr_reader :hidden, :has_flag, :adjacent_bombs_count,
               :has_mine, :adjacent_tiles
 
-  def initialize
+  def initialize(board:)
     @hidden = true
     @has_flag = false
     @adjacent_bombs_count = 0
     @has_mine = false
     @adjacent_tiles = []
+    @board = board
   end
 
   def click
     return false unless can_show?
     show_tile
+    board.mine_clicked if has_mine
     true
   end
 
   def show
-    show_tile if can_show? && !has_mine
+    show_tile && board.valid_tile_discovered if can_show? && !has_mine
   end
 
   def toggle_flag
@@ -49,6 +51,7 @@ class Tile
 
   private
 
+  attr_reader :board
   attr_writer :hidden, :has_flag, :has_mine, :adjacent_bombs_count
 
   def can_show?

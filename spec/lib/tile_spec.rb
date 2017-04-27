@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 describe Tile do
-  subject { Tile.new }
+  let(:board) { double('board') }
+  let(:adjacent_tile) { Tile.new(board: board) }
+  subject { Tile.new(board: board) }
 
   describe '#initialize' do
     it 'should start as a "hidden" tile' do
@@ -76,7 +78,6 @@ describe Tile do
       end
 
       it 'should update adjacent_bombs_count to adjacent tiles' do
-        adjacent_tile = Tile.new
         subject.add_adjacent_tile(adjacent_tile)
         subject.place_mine
         expect(adjacent_tile.adjacent_bombs_count).to eq(1)
@@ -90,7 +91,6 @@ describe Tile do
       end
 
       it 'should not update adjacent_bombs_count to adjacent tiles' do
-        adjacent_tile = Tile.new
         subject.add_adjacent_tile(adjacent_tile)
         allow(subject).to receive(:has_mine).and_return(true)
 
@@ -117,9 +117,12 @@ describe Tile do
       end
     end
 
-    it 'should show tile if it\'s not has a flag, still hidden and does not has a mine' do
-      subject.show
-      expect(subject.hidden).to be false
+    context 'tile does not has a flag, still hidden and does not has a mine' do
+      it 'show tile and call #valid_tile_discovered on board' do
+        expect(board).to receive(:valid_tile_discovered)
+        subject.show
+        expect(subject.hidden).to be false
+      end
     end
   end
 
@@ -135,7 +138,6 @@ describe Tile do
       end
 
       it 'should call #show for adjacent tiles' do
-        adjacent_tile = Tile.new
         expect(adjacent_tile).to receive(:show).once
 
         subject.add_adjacent_tile(adjacent_tile)
@@ -160,6 +162,14 @@ describe Tile do
       it 'should return false' do
         allow(subject).to receive(:has_flag).and_return(true)
         expect(subject.click).to be false
+      end
+    end
+
+    context 'with a mine on tile' do
+      it 'should terminate game' do
+        allow(subject).to receive(:has_mine).and_return(true)
+        expect(board).to receive(:mine_clicked)
+        subject.click
       end
     end
   end
