@@ -14,12 +14,23 @@ describe Tile do
       expect(subject.has_flag).to be false
     end
 
-    it 'should start without adjacent bombs count' do
+    it 'should start with zero adjacent bombs count' do
       expect(subject.adjacent_bombs_count).to eq(0)
     end
 
     it 'should start without mine set on tile' do
       expect(subject.has_mine).to be false
+    end
+
+    it 'should start without any adjacent tile' do
+      expect(subject.adjacent_tiles).to be_empty
+    end
+  end
+
+  describe '#increase_adjacent_bombs_count' do
+    it 'should increase adjacent_bombs_count by 1' do
+      subject.increase_adjacent_bombs_count
+      expect(subject.adjacent_bombs_count).to eq(1)
     end
   end
 
@@ -43,6 +54,75 @@ describe Tile do
     end
   end
 
+  describe '#add_adjacent_tile' do
+    let(:double_tile) { double('tile', add_adjacent_tile: nil) }
+
+    it 'should add a tile to adjacent tiles list' do
+      subject.add_adjacent_tile(double_tile)
+      expect(subject.adjacent_tiles).to include(double_tile)
+    end
+
+    it 'should call add_adjacent_tile for tile passed as argument, sending self' do
+      expect(double_tile).to receive(:add_adjacent_tile).with(subject).and_return(true)
+      subject.add_adjacent_tile(double_tile)
+    end
+  end
+
+  describe '#place_mine' do
+    context 'without mine placed' do
+      it 'should set has_mine to true' do
+        subject.place_mine
+        expect(subject.has_mine).to be true
+      end
+
+      it 'should update adjacent_bombs_count to adjacent tiles' do
+        adjacent_tile = Tile.new
+        subject.add_adjacent_tile(adjacent_tile)
+        subject.place_mine
+        expect(adjacent_tile.adjacent_bombs_count).to eq(1)
+      end
+    end
+
+    context 'with mine placed' do
+      it 'should raise error' do
+        allow(subject).to receive(:has_mine).and_return(true)
+        expect { subject.place_mine }.to raise_error(MineAlreadyPlacedError)
+      end
+
+      it 'should not update adjacent_bombs_count to adjacent tiles' do
+        adjacent_tile = Tile.new
+        subject.add_adjacent_tile(adjacent_tile)
+        allow(subject).to receive(:has_mine).and_return(true)
+
+        expect { subject.place_mine }.to raise_error(MineAlreadyPlacedError)
+        expect(adjacent_tile.adjacent_bombs_count).to eq(0)
+      end
+    end
+  end
+
+  describe '#show' do
+    context 'with a flag' do
+      it 'should not show tile' do
+        allow(subject).to receive(:has_flag).and_return(true)
+        subject.show
+        expect(subject.hidden).to be true
+      end
+    end
+
+    context 'with a mine' do
+      it 'should not show tile' do
+        allow(subject).to receive(:has_mine).and_return(true)
+        subject.show
+        expect(subject.hidden).to be true
+      end
+    end
+
+    it 'should show tile if it\'s not has a flag, still hidden and does not has a mine' do
+      subject.show
+      expect(subject.hidden).to be false
+    end
+  end
+
   describe '#click' do
     context 'with "hidden" tile' do
       it 'should "show" tile' do
@@ -52,6 +132,14 @@ describe Tile do
 
       it 'should return true' do
         expect(subject.click).to be true
+      end
+
+      it 'should call #show for adjacent tiles' do
+        adjacent_tile = Tile.new
+        expect(adjacent_tile).to receive(:show).once
+
+        subject.add_adjacent_tile(adjacent_tile)
+        subject.click
       end
     end
 
@@ -72,22 +160,6 @@ describe Tile do
       it 'should return false' do
         allow(subject).to receive(:has_flag).and_return(true)
         expect(subject.click).to be false
-      end
-    end
-  end
-
-  describe '#place_mine' do
-    context 'without mine placed' do
-      it 'should set has_mine to true' do
-        subject.place_mine
-        expect(subject.has_mine).to be true
-      end
-    end
-
-    context 'with mine placed' do
-      it 'should raise error' do
-        allow(subject).to receive(:has_mine).and_return(true)
-        expect { subject.place_mine }.to raise_error(MineAlreadyPlacedError)
       end
     end
   end
