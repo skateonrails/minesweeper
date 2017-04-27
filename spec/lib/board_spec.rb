@@ -69,4 +69,14 @@ describe Board do
       end
     end
   end
+
+  describe '#current_state' do
+    it 'should return an array representing the current state of board' do
+      subject.current_state.each do |board_representation|
+        expect(board_representation).to respond_to(:row)
+        expect(board_representation).to respond_to(:col)
+        expect(board_representation).to respond_to(:tile_state)
+      end
+    end
+  end
 end

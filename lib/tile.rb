@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'exceptions'
+require_relative 'helpers/tile_helper'
 # Tile class is responsible to represent a tile
 # on minesweeper game
 class Tile
@@ -47,6 +48,11 @@ class Tile
 
   def increase_adjacent_bombs_count
     self.adjacent_bombs_count += 1
+  end
+
+  def current_state(args = {})
+    xray = args.fetch(:xray, false)
+    TileHelper.current_state(tile: self, xray: xray)
   end
 
   private

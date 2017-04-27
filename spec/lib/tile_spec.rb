@@ -173,4 +173,110 @@ describe Tile do
       end
     end
   end
+
+  describe '#current_state' do
+    context 'xray as false' do
+      let(:current_state) { subject.current_state }
+
+      context 'with hidden tile' do
+        context 'and has no flag' do
+          it 'should return hidden' do
+            expect(current_state).to eq(:hidden)
+          end
+        end
+
+        context 'when tile has flag' do
+          it 'should return flag' do
+            allow(subject).to receive(:has_flag).and_return(true)
+            expect(current_state).to eq(:flag)
+          end
+        end
+
+        context 'when tile has mine' do
+          it 'should return hidden' do
+            allow(subject).to receive(:has_mine).and_return(true)
+            expect(current_state).to eq(:hidden)
+          end
+        end
+      end
+
+      context 'without hidden tile' do
+        before :each do
+          allow(subject).to receive(:hidden).and_return(false)
+        end
+
+        context 'when tile does not have a mine on it neither on adjacency' do
+          it 'should return clear' do
+            expect(current_state).to eq(:clear)
+          end
+        end
+
+        context 'when tile has mine' do
+          it 'should return mine' do
+            allow(subject).to receive(:has_mine).and_return(true)
+            expect(current_state).to eq(:mine)
+          end
+        end
+
+        context 'when tile has adjacent mines' do
+          it 'should return the value from adjacent_bombs_count' do
+            allow(subject).to receive(:adjacent_bombs_count).and_return(2)
+            expect(current_state).to eq(2)
+          end
+        end
+      end
+    end
+
+    context 'xray as true' do
+      let(:current_state) { subject.current_state(xray: true) }
+
+      context 'with hidden tile' do
+        context 'and has no flag' do
+          it 'should return clear' do
+            expect(current_state).to eq(:clear)
+          end
+        end
+
+        context 'when tile has flag' do
+          it 'should return flag' do
+            allow(subject).to receive(:has_flag).and_return(true)
+            expect(current_state).to eq(:flag)
+          end
+        end
+
+        context 'when tile has mine' do
+          it 'should return mine' do
+            allow(subject).to receive(:has_mine).and_return(true)
+            expect(current_state).to eq(:mine)
+          end
+        end
+      end
+
+      context 'without hidden tile' do
+        before :each do
+          allow(subject).to receive(:hidden).and_return(false)
+        end
+
+        context 'when tile does not have a mine on it neither on adjacency' do
+          it 'should return clear' do
+            expect(current_state).to eq(:clear)
+          end
+        end
+
+        context 'when tile has mine' do
+          it 'should return mine' do
+            allow(subject).to receive(:has_mine).and_return(true)
+            expect(current_state).to eq(:mine)
+          end
+        end
+
+        context 'when tile has adjacent mines' do
+          it 'should return the value from adjacent_bombs_count' do
+            allow(subject).to receive(:adjacent_bombs_count).and_return(2)
+            expect(current_state).to eq(2)
+          end
+        end
+      end
+    end
+  end
 end

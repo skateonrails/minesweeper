@@ -36,6 +36,12 @@ class Minesweeper
     state == :playing
   end
 
+  def board_state(args = {})
+    xray = args.fetch(:xray, false)
+    parameter = xray && !still_playing?
+    board.current_state(xray: parameter)
+  end
+
   private
 
   attr_reader :board

@@ -69,4 +69,30 @@ describe Minesweeper do
       end
     end
   end
+
+  describe '#board_state' do
+    context 'xray as false' do
+      it 'should call #current_state on board' do
+        expect_any_instance_of(Board).to receive(:current_state).with(xray: false)
+        subject.board_state
+      end
+    end
+
+    context 'xray as true' do
+      context 'with game not finished' do
+        it 'should call #current_state on board with false parameter' do
+          expect_any_instance_of(Board).to receive(:current_state).with(xray: false)
+          subject.board_state(xray: true)
+        end
+      end
+
+      context 'with game finished' do
+        it 'should call #current_state on board with true parameter' do
+          allow(subject).to receive(:still_playing?).and_return(false)
+          expect_any_instance_of(Board).to receive(:current_state).with(xray: true)
+          subject.board_state(xray: true)
+        end
+      end
+    end
+  end
 end

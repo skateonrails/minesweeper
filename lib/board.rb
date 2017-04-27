@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'matrix'
+require 'ostruct'
 require 'tile'
 require_relative 'helpers/board_helper'
 # Board class is responsible to create a matrix of tiles
@@ -34,6 +35,15 @@ class Board
   def valid_tile_discovered
     self.tiles_remaining -= 1
     minesweeper.victory if tiles_remaining.zero?
+  end
+
+  def current_state(args = {})
+    xray = args.fetch(:xray, false)
+    Matrix.build(width, height) do |row, col|
+      OpenStruct.new(row: row,
+                     col: col,
+                     tile_state: tile(row, col).current_state(xray: xray))
+    end
   end
 
   private
