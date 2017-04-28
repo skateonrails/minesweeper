@@ -5,7 +5,7 @@ require 'matrix'
 require 'ostruct'
 
 describe PrettyPrinter do
-  subject { PrettyPrinter }
+  subject { PrettyPrinter.new }
   let(:tile_state) { nil }
   let(:matrix) { Matrix.build(3, 3) { OpenStruct.new(tile_state: tile_state) } }
 

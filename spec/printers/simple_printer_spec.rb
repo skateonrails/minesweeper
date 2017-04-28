@@ -5,7 +5,7 @@ require 'matrix'
 require 'ostruct'
 
 describe SimplePrinter do
-  subject { SimplePrinter }
+  subject { SimplePrinter.new }
   let(:matrix) { Matrix.build(3, 3) { OpenStruct.new(tile_state: :hidden) } }
   let(:expected_output) do
     <<~OUTPUT

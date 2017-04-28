@@ -9,11 +9,9 @@ class PrettyPrinter < SimplePrinter
     flag: 'F'
   }.freeze
 
-  class << self
-    private
+  private
 
-    def format_row(row)
-      row.map { |tile| TILE_FORMAT[tile.tile_state] }.join('|')
-    end
+  def format_row
+    current_row.map { |tile| TILE_FORMAT[tile.tile_state] }.join('|')
   end
 end
