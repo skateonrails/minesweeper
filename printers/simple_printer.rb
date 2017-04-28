@@ -6,9 +6,15 @@ class SimplePrinter
     # :reek:NestedIterators
     def print(matrix)
       mapping = matrix.to_a.map do |row|
-        row.map(&:tile_state).join(' | ')
+        format_row(row)
       end
       puts mapping
+    end
+
+    private
+
+    def format_row(row)
+      row.map(&:tile_state).join(' | ')
     end
   end
 end
