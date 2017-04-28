@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'matrix'
-require 'ostruct'
 
 describe SimplePrinter do
   subject { SimplePrinter.new }

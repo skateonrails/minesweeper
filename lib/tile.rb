@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'exceptions'
-require_relative 'helpers/tile_helper'
 # Tile class is responsible to represent a tile
 # on minesweeper game
 class Tile

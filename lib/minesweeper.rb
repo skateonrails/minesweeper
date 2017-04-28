@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'board'
-
 # Minesweeper class is responsible to control the game flow
 class Minesweeper
   def initialize(width, height, mines)

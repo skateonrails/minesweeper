@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require 'matrix'
-require 'ostruct'
-require 'tile'
-require_relative 'helpers/board_helper'
 # Board class is responsible to create a matrix of tiles
 class Board
   attr_reader :grid, :tiles_remaining
